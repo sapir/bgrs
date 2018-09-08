@@ -21,7 +21,10 @@ pub struct PointState {
 
 impl PointState {
     fn new(checker_count: usize, checker_color: PlayerColor) -> Self {
-        Self { checker_count, checker_color }
+        Self {
+            checker_count,
+            checker_color,
+        }
     }
 }
 
@@ -39,13 +42,15 @@ impl BoardState {
             let opposite = points[23 - i];
             points[i] = PointState::new(
                 opposite.checker_count,
-                opposite.checker_color.inverse());
+                opposite.checker_color.inverse(),
+            );
         }
         BoardState(points)
     }
 
     fn print_points<'a, I>(&self, row_count: usize, points: I)
-    where I: Iterator<Item=&'a PointState>
+    where
+        I: Iterator<Item = &'a PointState>,
     {
         let mut first: bool = true;
 
