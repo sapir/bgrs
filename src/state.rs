@@ -93,7 +93,7 @@ impl BoardState {
                 "{}",
                 if point.checker_count > row_count {
                     if row_count >= 5 {
-                        "*"
+                        "+"
                     } else {
                         BoardState::get_checker_string(point.checker_color)
                     }
