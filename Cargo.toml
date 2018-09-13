@@ -5,3 +5,4 @@ authors = ["Y. Sapir <yasapir@gmail.com>"]
 
 [dependencies]
 rand = "0.5.5"
+dedup_iter = "0.1.1"

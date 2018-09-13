@@ -36,10 +36,10 @@ impl PointState {
     }
 }
 
-type PointIndex = usize;
+pub type PointIndex = usize;
 
-#[derive(Clone, Copy, Debug)]
-pub struct Move(PointIndex, PointIndex);
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Move(pub PointIndex, pub PointIndex);
 
 impl Move {
     // get die roll used to make this move
