@@ -45,8 +45,12 @@ impl PointState {
         }
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.checker_count == 0
+    }
+
     pub fn is_used_by(&self, player: PlayerColor) -> bool {
-        self.checker_color == player && self.checker_count > 0
+        self.checker_color == player && !self.is_empty()
     }
 }
 
@@ -175,8 +179,19 @@ impl BoardState {
             .collect()
     }
 
-    // swap point indices if player is white, so that 1 is start point and 24
+    // swap point index if player is white, so that 1 is start point and 24
     // is end point
+    fn reverse_white_point(
+        player: PlayerColor,
+        point: PointIndex,
+    ) -> PointIndex {
+        match player {
+            PlayerColor::White => Self::get_opposite(point),
+            _ => point,
+        }
+    }
+
+    // like reverse_white_point() for a Vec
     fn reverse_white_points(
         player: PlayerColor,
         index_vec: &mut Vec<PointIndex>,
@@ -188,7 +203,7 @@ impl BoardState {
         }
     }
 
-    // like reverse_white_point() for a Vec<Move>
+    // like reverse_white_points() for a Vec<Move>
     fn reverse_white_moves(player: PlayerColor, move_vec: &mut Vec<Move>) {
         if player == PlayerColor::White {
             move_vec.iter_mut().for_each(|m| {
@@ -202,12 +217,11 @@ impl BoardState {
     pub fn get_moves_for_single_die(&self, die_roll: usize) -> Vec<Move> {
         // must enter checkers on bar if possible
         let cur_player_bar = Self::get_bar_point(self.cur_player);
-        let mut relevant_points =
-            if self.points[cur_player_bar].checker_count > 0 {
-                vec![cur_player_bar]
-            } else {
-                self.used_points(self.cur_player)
-            };
+        let mut relevant_points = if !self.points[cur_player_bar].is_empty() {
+            vec![cur_player_bar]
+        } else {
+            self.used_points(self.cur_player)
+        };
 
         if relevant_points.is_empty() {
             return vec![];
@@ -223,14 +237,24 @@ impl BoardState {
             .iter()
             .map(|i| Move(*i, i + die_roll))
             // destination must be empty or a blot, if on the board
-            .filter(|Move(_i, j)|
+            .filter(|Move(_i, j)| {
                 // off the board is ok at this point
-                *j > 24
+                if *j > 24 {
+                    return true;
+                }
+
+                let real_j = Self::reverse_white_point(self.cur_player, *j);
+                let end_point = &self.points[real_j];
+
                 // empty or used by current player is ok
-                || !self.points[*j].is_used_by(self.cur_player.inverse())
+                if !end_point.is_used_by(self.cur_player.inverse()) {
+                    return true;
+                }
+
                 // else used by other player. if only 1 checker is present,
                 // also ok.
-                || self.points[*j].checker_count == 1);
+                end_point.checker_count == 1
+            });
 
         let mut moves = if bearing_off {
             // destination allowed to be off the board, BUT must be either
