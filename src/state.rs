@@ -257,11 +257,22 @@ impl BoardState {
             });
 
         let mut moves = if bearing_off {
-            // destination allowed to be off the board, BUT must be either
-            // exact or else this is the farthest move
+            // destination allowed to be off the board, BUT must be either exact
+            // or else this is the farthest move. also, if it's off the board,
+            // let's fix the index.
             moves
-                .filter(|Move(i, j)| *j == 25 || *i == farthest)
-                .collect()
+                .filter_map(|move_| {
+                    let Move(i, j) = move_;
+
+                    // on the board, or exactly off the board
+                    if j <= 25 {
+                        Some(move_)
+                    } else if i == farthest {
+                        Some(Move(i, 25))
+                    } else {
+                        None
+                    }
+                }).collect()
         } else {
             // destination must be on board
             moves.filter(|Move(_i, j)| *j <= 24).collect()
