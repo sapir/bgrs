@@ -1,0 +1,9 @@
+[package]
+name = "bgrs-web"
+version = "0.1.0"
+authors = ["Y. Sapir <yasapir@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+stdweb = "0.4.9"
+yew = { git = "https://github.com/DenisKolodin/yew" }

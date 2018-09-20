@@ -1,5 +1,10 @@
 [workspace]
 members = [
     "bgrs-logic",
-    "bgrs-tui"
+    "bgrs-tui",
+    "bgrs-web",
+]
+default-members = [
+    "bgrs-logic",
+    "bgrs-tui",
 ]
