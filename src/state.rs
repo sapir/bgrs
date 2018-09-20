@@ -345,6 +345,10 @@ impl BoardState {
         ret
     }
 
+    pub fn end_turn(&mut self) {
+        self.cur_player = self.cur_player.inverse();
+    }
+
     // helper function for get_moves(). generates list of possible move
     // sequences for a given permutation of the dice.
     fn backtrack_die_moves(&self, dice_slice: &[usize]) -> Vec<VecDeque<Move>> {
@@ -439,5 +443,26 @@ impl BoardState {
             .into_iter()
             .filter(|s| s.len() >= max_seq_len)
             .collect()
+    }
+
+    pub fn get_winner(&self) -> Option<PlayerColor> {
+        let mut black_won = true;
+        let mut white_won = true;
+        for point in self.points.iter() {
+            if !point.is_empty() {
+                match point.checker_color {
+                    PlayerColor::Black => black_won = false,
+                    PlayerColor::White => white_won = false,
+                }
+            }
+        }
+
+        if black_won && !white_won {
+            Some(PlayerColor::Black)
+        } else if white_won && !black_won {
+            Some(PlayerColor::White)
+        } else {
+            None
+        }
     }
 }
