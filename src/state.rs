@@ -1,5 +1,6 @@
 use std::cmp::max;
 use std::collections::VecDeque;
+use std::fmt;
 use std::iter::repeat;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -14,6 +15,19 @@ impl PlayerColor {
             PlayerColor::Black => PlayerColor::White,
             PlayerColor::White => PlayerColor::Black,
         }
+    }
+}
+
+impl fmt::Display for PlayerColor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                PlayerColor::Black => "Black",
+                PlayerColor::White => "White",
+            }
+        )
     }
 }
 
