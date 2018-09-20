@@ -1,11 +1,10 @@
+extern crate backgammon;
 extern crate dedup_iter;
 extern crate rand;
 
-mod state;
-
+use backgammon::{BoardState, Move, PlayerColor};
 use dedup_iter::DedupAdapter;
 use rand::Rng;
-use state::{BoardState, Move, PlayerColor};
 use std::fmt::Display;
 use std::io::{self, Write};
 

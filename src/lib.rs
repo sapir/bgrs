@@ -1,3 +1,5 @@
+extern crate dedup_iter;
+
 use dedup_iter::DedupAdapter;
 use std::cmp::max;
 use std::collections::VecDeque;
