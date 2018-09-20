@@ -1,7 +1,15 @@
 [[package]]
-name = "backgammon"
+name = "bgrs-logic"
 version = "0.1.0"
 dependencies = [
+ "dedup_iter 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "bgrs-tui"
+version = "0.1.0"
+dependencies = [
+ "bgrs-logic 0.1.0",
  "dedup_iter 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

@@ -1,0 +1,10 @@
+[package]
+name = "bgrs-tui"
+version = "0.1.0"
+authors = ["Y. Sapir <yasapir@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+bgrs-logic = { path = "../bgrs-logic" }
+dedup_iter = "0.1.1"
+rand = "0.5.5"

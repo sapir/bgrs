@@ -1,8 +1,8 @@
-extern crate backgammon;
+extern crate bgrs_logic;
 extern crate dedup_iter;
 extern crate rand;
 
-use backgammon::{BoardState, Move, PlayerColor};
+use bgrs_logic::{BoardState, Move, PlayerColor};
 use dedup_iter::DedupAdapter;
 use rand::Rng;
 use std::fmt::Display;

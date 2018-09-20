@@ -1,8 +1,5 @@
-[package]
-name = "backgammon"
-version = "0.1.0"
-authors = ["Y. Sapir <yasapir@gmail.com>"]
-
-[dependencies]
-rand = "0.5.5"
-dedup_iter = "0.1.1"
+[workspace]
+members = [
+    "bgrs-logic",
+    "bgrs-tui"
+]
