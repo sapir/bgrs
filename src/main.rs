@@ -5,7 +5,8 @@ mod state;
 
 use dedup_iter::DedupAdapter;
 use rand::Rng;
-use state::{BoardState, Move};
+use state::{BoardState, Move, PlayerColor};
+use std::fmt::Display;
 use std::io::{self, Write};
 
 type DieRoll = usize;
@@ -33,7 +34,7 @@ where
     ret
 }
 
-fn get_num_input(prompt: &str) -> io::Result<usize> {
+fn get_num_input(prompt: &str) -> io::Result<isize> {
     let stdin = io::stdin();
     let mut stdout = io::stdout();
     let mut line = String::new();
@@ -48,13 +49,13 @@ fn get_num_input(prompt: &str) -> io::Result<usize> {
     }
 }
 
-fn fmt_array<T>(indices: &[T]) -> String
+fn fmt_array<T>(array: &[T]) -> String
 where
-    T: ToString,
+    T: Display,
 {
-    indices
+    array
         .iter()
-        .map(T::to_string)
+        .map(|x| format!("{}", x))
         .collect::<Vec<String>>()
         .join(", ")
 }
@@ -66,6 +67,8 @@ fn get_human_player_move_seq(
 ) -> io::Result<Option<Vec<Move>>> {
     let valid_move_seqs = board.get_move_seqs(dice);
     if valid_move_seqs.is_empty() {
+        board.print();
+        println!("No available moves!");
         return Ok(None);
     }
 
@@ -81,7 +84,7 @@ fn get_human_player_move_seq(
 
         let valid_next_moves: Vec<Move> = valid_move_seqs
             .iter()
-            .filter(|&s| s[..(ret.len())] == ret[..])
+            .filter(|&s| s.starts_with(&ret))
             .map(|s| s[ret.len()])
             // iterator generation basically makes it sorted, so this removes
             // all duplicates
@@ -93,44 +96,104 @@ fn get_human_player_move_seq(
         let start_point = get_num_input(&format!(
             "start point? ({}{}): ",
             fmt_array(&valid_start_points),
-            if !ret.is_empty() { "; 0 to undo)" } else { "" },
+            if !ret.is_empty() { "; -1 to undo" } else { "" },
         ))?;
 
-        if start_point == 0 {
+        if start_point < 0 {
             ret.pop();
             cur_board = board.with_move_seq(ret.iter());
             continue;
         }
 
-        let valid_distances = uniq_map(
-            valid_next_moves.iter().filter(|m| m.0 == start_point),
-            |m| m.1 - start_point,
-        );
+        let start_point = start_point as usize;
+        if !valid_start_points.contains(&start_point) {
+            // ignore
+            continue;
+        }
+
+        let valid_next_moves: Vec<Move> = valid_next_moves
+            .into_iter()
+            .filter(|m| m.0 == start_point)
+            .collect();
+
+        let valid_distances =
+            uniq_map(valid_next_moves.iter(), |m| m.die_roll());
 
         let distance = get_num_input(&format!(
-            "distance? ({}; 0 to undo): ",
+            "distance? ({}; -1 to undo): ",
             fmt_array(&valid_distances),
         ))?;
 
-        if distance == 0 {
+        if distance < 0 {
             // undo start point; don't modify ret
             continue;
         }
 
-        let move_ = Move(start_point, start_point + distance);
-        ret.push(move_);
-        cur_board = cur_board.with_move(move_);
+        let distance = distance as usize;
+
+        // look for original Move object so we don't have to calculate end point
+        // ourselves + validate distance
+        let move_ = valid_next_moves.iter().find(|m| m.die_roll() == distance);
+        if let Some(&move_) = move_ {
+            ret.push(move_);
+            cur_board = cur_board.with_move(move_);
+        } else {
+            // not one of the valid moves. ignore.
+            continue;
+        }
     }
 
     Ok(Some(ret))
 }
 
+fn get_random_move_seq(
+    board: &BoardState,
+    dice: DiceRoll,
+) -> Option<Vec<Move>> {
+    let mut rng = rand::thread_rng();
+
+    board.print();
+
+    let valid_move_seqs = board.get_move_seqs(dice);
+    if valid_move_seqs.is_empty() {
+        println!("No available moves!");
+    } else {
+        println!("choosing...");
+    }
+
+    rng.choose(&valid_move_seqs).cloned()
+}
+
 fn main() {
     let mut board = BoardState::new();
 
-    let dice = roll_dice();
-    println!("Dice: {:?}", dice);
+    loop {
+        if let Some(winner) = board.get_winner() {
+            println!();
+            println!("*** {} won! ***", winner);
+            println!();
+            break;
+        }
 
-    let move_seq = get_human_player_move_seq(&board, dice);
-    println!("chosen seq: {:?}", move_seq);
+        println!("*** {}'s turn! ***", board.cur_player);
+
+        let dice = roll_dice();
+        println!("Dice: {:?}", dice);
+
+        let move_seq = match board.cur_player {
+            PlayerColor::Black => {
+                get_human_player_move_seq(&board, dice).expect("input error")
+            }
+            PlayerColor::White => get_random_move_seq(&board, dice),
+        };
+
+        if let Some(move_seq) = move_seq {
+            println!("Making move: {:?}", move_seq);
+            board = board.with_move_seq(move_seq.iter());
+        }
+
+        board.end_turn();
+
+        println!();
+    }
 }
