@@ -374,8 +374,18 @@ impl BoardState {
                     let state_after_move = self.with_move(move_);
                     let mut next_move_seqs =
                         state_after_move.backtrack_die_moves(&dice_slice[1..]);
+
                     for mut next_moves in next_move_seqs.iter_mut() {
                         next_moves.push_front(move_);
+                    }
+
+                    // if next_move_seqs is empty (e.g. if performing all
+                    // moves is impossible) then we won't have gotten anything.
+                    // but player can still do the first move, so return that.
+                    if next_move_seqs.is_empty() {
+                        let mut seq = VecDeque::new();
+                        seq.push_back(move_);
+                        next_move_seqs.push(seq);
                     }
 
                     next_move_seqs
