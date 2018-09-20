@@ -1,3 +1,4 @@
+use dedup_iter::DedupAdapter;
 use std::cmp::max;
 use std::collections::VecDeque;
 use std::fmt;
@@ -414,20 +415,29 @@ impl BoardState {
                     .map(|move_seq| move_seq.into_iter().collect::<Vec<Move>>())
             }).collect();
 
-        // must perform maximum number of moves
+        // get length of longest sequence
         let max_seq_len = move_seqs.iter().map(|s| s.len()).max().unwrap_or(0);
-        let only_longest =
-            move_seqs.into_iter().filter(|s| s.len() >= max_seq_len);
 
-        // prefer larger dice. this is relevant iff not a double and max_seq_len
-        // == 1.
-        if !is_double && max_seq_len == 1 {
+        // if only one of the dice can be used, prefer the larger one. this is
+        // relevant iff not a double, max_seq_len == 1, and both dice have
+        // possible moves. note that if max_seq_len == 1, then all the sequences
+        // are of length 1; they can't be empty.
+        if !is_double
+            && max_seq_len == 1
+            // note that moves are sorted by die roll so dedup is ok
+            && move_seqs.iter().map(|s| s[0].die_roll()).dedup().count() >= 2
+        {
             let larger_die = max(dice_roll.0, dice_roll.1);
-            only_longest
+            return move_seqs
+                .into_iter()
                 .filter(|s| s[0].die_roll() == larger_die)
-                .collect()
-        } else {
-            only_longest.collect()
+                .collect();
         }
+
+        // else we must perform maximum number of moves
+        move_seqs
+            .into_iter()
+            .filter(|s| s.len() >= max_seq_len)
+            .collect()
     }
 }
