@@ -164,7 +164,7 @@ fn get_random_move_seq(
 }
 
 fn main() {
-    let mut board = BoardState::new();
+    let mut board = BoardState::new_starting_state(PlayerColor::Black);
 
     loop {
         if let Some(winner) = board.get_winner() {

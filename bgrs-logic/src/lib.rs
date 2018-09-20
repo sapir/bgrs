@@ -80,7 +80,7 @@ impl BoardState {
         25 - index
     }
 
-    pub fn new() -> Self {
+    pub fn new_starting_state(starting_player: PlayerColor) -> Self {
         let mut points = [PointState::new(0, PlayerColor::Black); 26];
         points[1] = PointState::new(2, PlayerColor::Black);
         points[6] = PointState::new(5, PlayerColor::White);
@@ -97,7 +97,7 @@ impl BoardState {
 
         BoardState {
             points,
-            cur_player: PlayerColor::Black,
+            cur_player: starting_player,
         }
     }
 
