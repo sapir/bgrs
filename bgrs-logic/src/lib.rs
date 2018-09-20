@@ -382,7 +382,7 @@ impl BoardState {
                     let mut next_move_seqs =
                         state_after_move.backtrack_die_moves(&dice_slice[1..]);
 
-                    for mut next_moves in next_move_seqs.iter_mut() {
+                    for next_moves in next_move_seqs.iter_mut() {
                         next_moves.push_front(move_);
                     }
 
