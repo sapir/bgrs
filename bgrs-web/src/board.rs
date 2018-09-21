@@ -68,16 +68,23 @@ impl Board {
         let width = props.width;
         let height = props.height;
 
-        let point_x_margin = 15;
+        let point_x_margin = 10;
         let point_y_margin = 45;
 
-        let point_width = (width - (11 * point_x_margin)) / 12;
+        let point_width = (width - (11 * point_x_margin)) / 15;
         let point_height = (height - point_y_margin) / 2;
 
         let (point_x_index, point_y_index, dir) = if index < 12 {
             (11 - index, 1, PointDirection::Up)
         } else {
             (index - 12, 0, PointDirection::Down)
+        };
+
+        // make room for bar and "end" points
+        let point_x_index = if point_x_index < 6 {
+            point_x_index + 1
+        } else {
+            point_x_index + 2
         };
 
         let x = (point_width + point_x_margin) * point_x_index;
