@@ -4,6 +4,13 @@
 extern crate yew;
 use yew::prelude::*;
 
+extern crate bgrs_logic;
+
+mod board;
+mod point;
+
+use self::board::Board;
+
 struct Model;
 
 impl Component for Model {
@@ -23,8 +30,7 @@ impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
             <>
-                <div>{"Some text"}</div>
-                <div>{"More text"}</div>
+                <Board: />
             </>
         }
     }

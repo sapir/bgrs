@@ -34,14 +34,14 @@ impl fmt::Display for PlayerColor {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct PointState {
     pub checker_count: usize,
     pub checker_color: PlayerColor,
 }
 
 impl PointState {
-    fn new(checker_count: usize, checker_color: PlayerColor) -> Self {
+    pub fn new(checker_count: usize, checker_color: PlayerColor) -> Self {
         Self {
             checker_count,
             checker_color,
@@ -69,7 +69,7 @@ impl Move {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct BoardState {
     pub points: [PointState; 26],
     pub cur_player: PlayerColor,

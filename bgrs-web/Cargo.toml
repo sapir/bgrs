@@ -6,4 +6,5 @@ edition = "2018"
 
 [dependencies]
 stdweb = "0.4.9"
-yew = { git = "https://github.com/DenisKolodin/yew" }
+yew = { git = "https://github.com/sapir/yew", branch="svg" }
+bgrs-logic = { path = "../bgrs-logic" }
