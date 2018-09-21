@@ -1,7 +1,15 @@
 .board-bg {
-    fill: #efe1d7;
+    fill: #bdbaaa;
 }
 
 .point {
     fill: #223322;
+}
+
+.checker.black-player {
+    fill: black;
+}
+
+.checker.white-player {
+    fill: ivory;
 }

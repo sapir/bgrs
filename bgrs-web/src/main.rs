@@ -7,7 +7,10 @@ use yew::prelude::*;
 extern crate bgrs_logic;
 
 mod board;
+mod checker;
+mod checker_group;
 mod point;
+mod svg;
 
 use self::board::Board;
 

@@ -90,6 +90,7 @@ impl Board {
                 width=point_width,
                 height=point_height,
                 dir=dir,
+                state=*point,
             />
         }
     }

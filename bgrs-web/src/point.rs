@@ -3,6 +3,9 @@ extern crate bgrs_logic;
 use bgrs_logic::{PlayerColor, PointState};
 use yew::prelude::*;
 
+use super::checker_group::{CheckerGroup, CheckerGroupVAlign};
+use super::svg::translate;
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum PointDirection {
     Up,
@@ -60,23 +63,35 @@ impl Renderable<Point> for Point {
             ref state,
         } = self.props;
 
+        let flat_side_y = match dir {
+            PointDirection::Up => y + height,
+            PointDirection::Down => y,
+        };
+
         html! {
-            <path
-                class="point",
-                d=format!(
-                    "M{} {} h{} l{} {} Z",
-                    x,
-                    match dir {
-                        PointDirection::Up => y + height,
-                        PointDirection::Down => y,
+            <g transform=translate(x, flat_side_y),>
+                <path
+                    class="point",
+                    d=format!(
+                        "M0 0 h{} l{} {} Z",
+                        width,
+                        -width / 2,
+                        match dir {
+                            PointDirection::Up => -height,
+                            PointDirection::Down => height,
+                        }),
+                />
+
+                <CheckerGroup:
+                    x=width / 2,
+                    valign=match dir {
+                        PointDirection::Up => CheckerGroupVAlign::Bottom,
+                        PointDirection::Down => CheckerGroupVAlign::Top,
                     },
-                    width,
-                    -width / 2,
-                    match dir {
-                        PointDirection::Up => -height,
-                        PointDirection::Down => height,
-                    }),
-            />
+                    color=state.checker_color,
+                    count=state.checker_count,
+                />
+            </g>
         }
     }
 }
