@@ -6,6 +6,7 @@ use yew::prelude::*;
 
 extern crate bgrs_logic;
 
+mod bar;
 mod board;
 mod checker;
 mod checker_group;

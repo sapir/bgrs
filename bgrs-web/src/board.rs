@@ -3,6 +3,7 @@ extern crate bgrs_logic;
 use bgrs_logic::{BoardState, PlayerColor, PointState};
 use yew::prelude::*;
 
+use super::bar::Bar;
 use super::point::{Point, PointDirection};
 
 #[derive(Clone, PartialEq)]
@@ -57,23 +58,44 @@ impl Renderable<Board> for Board {
                 { for (&board.points[1..=24]).iter().enumerate().map(
                     |(i, p)| self.render_point(i as i32, p)
                 )}
+
+                <Bar:
+                    x=self.point_x_index_to_x(7) + self.point_width() / 2,
+                    y=self.point_height() / 2,
+                    black_count=board.points[0].checker_count,
+                    white_count=board.points[25].checker_count,
+                />
             </svg>
         }
     }
 }
 
 impl Board {
+    fn point_x_margin(&self) -> i32 {
+        10
+    }
+
+    fn point_y_margin(&self) -> i32 {
+        45
+    }
+
+    fn point_width(&self) -> i32 {
+        (self.props.width - (11 * self.point_x_margin())) / 15
+    }
+
+    fn point_height(&self) -> i32 {
+        (self.props.height - self.point_y_margin()) / 2
+    }
+
+    fn point_x_index_to_x(&self, point_x_index: i32) -> i32 {
+        (self.point_width() + self.point_x_margin()) * point_x_index
+    }
+
+    fn point_y_index_to_y(&self, point_y_index: i32) -> i32 {
+        (self.point_height() + self.point_y_margin()) * point_y_index
+    }
+
     fn render_point(&self, index: i32, point: &PointState) -> Html<Self> {
-        let props = &self.props;
-        let width = props.width;
-        let height = props.height;
-
-        let point_x_margin = 10;
-        let point_y_margin = 45;
-
-        let point_width = (width - (11 * point_x_margin)) / 15;
-        let point_height = (height - point_y_margin) / 2;
-
         let (point_x_index, point_y_index, dir) = if index < 12 {
             (11 - index, 1, PointDirection::Up)
         } else {
@@ -87,16 +109,13 @@ impl Board {
             point_x_index + 2
         };
 
-        let x = (point_width + point_x_margin) * point_x_index;
-        let y = (point_height + point_y_margin) * point_y_index;
-
         html! {
             <Point:
                 is_odd=(index % 2) == 1,
-                x=x,
-                y=y,
-                width=point_width,
-                height=point_height,
+                x=self.point_x_index_to_x(point_x_index),
+                y=self.point_y_index_to_y(point_y_index),
+                width=self.point_width(),
+                height=self.point_height(),
                 dir=dir,
                 state=*point,
             />
