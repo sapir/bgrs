@@ -92,6 +92,7 @@ impl Board {
 
         html! {
             <Point:
+                is_odd=(index % 2) == 1,
                 x=x,
                 y=y,
                 width=point_width,

@@ -2,8 +2,12 @@
     fill: #bdbaaa;
 }
 
-.point {
+.point.odd {
     fill: #223322;
+}
+
+.point.even {
+    fill: #224422;
 }
 
 .checker.black-player {

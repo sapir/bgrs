@@ -14,6 +14,7 @@ pub enum PointDirection {
 
 #[derive(Clone, PartialEq)]
 pub struct PointProps {
+    pub is_odd: bool,
     pub x: i32,
     pub y: i32,
     pub width: i32,
@@ -25,6 +26,7 @@ pub struct PointProps {
 impl Default for PointProps {
     fn default() -> Self {
         Self {
+            is_odd: false,
             x: 0,
             y: 0,
             width: 0,
@@ -55,6 +57,7 @@ impl Component for Point {
 impl Renderable<Point> for Point {
     fn view(&self) -> Html<Self> {
         let PointProps {
+            is_odd,
             x,
             y,
             width,
@@ -71,7 +74,10 @@ impl Renderable<Point> for Point {
         html! {
             <g transform=translate(x, flat_side_y),>
                 <path
-                    class="point",
+                    class=format!(
+                        "point {}",
+                        if is_odd { "odd" } else { "even" },
+                    ),
                     d=format!(
                         "M0 0 h{} l{} {} Z",
                         width,
