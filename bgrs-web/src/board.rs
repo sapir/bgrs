@@ -60,8 +60,9 @@ impl Renderable<Board> for Board {
                 )}
 
                 <Bar:
-                    x=self.point_x_index_to_x(7) + self.point_width() / 2,
-                    y=self.point_height() / 2,
+                    x=self.point_x_index_to_x(7),
+                    width=self.point_width(),
+                    height=height,
                     black_count=board.points[0].checker_count,
                     white_count=board.points[25].checker_count,
                 />

@@ -2,6 +2,10 @@
     fill: #bdbaaa;
 }
 
+.bar-bg {
+    fill: #b68964;
+}
+
 .point.odd {
     fill: #223322;
 }
