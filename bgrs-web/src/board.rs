@@ -10,7 +10,7 @@ use super::point::{Point, PointDirection};
 pub struct BoardProps {
     width: i32,
     height: i32,
-    board: Box<BoardState>,
+    board: BoardState,
 }
 
 impl Default for BoardProps {
@@ -18,7 +18,7 @@ impl Default for BoardProps {
         Self {
             width: 1200,
             height: 600,
-            board: Box::new(BoardState::new_starting_state(PlayerColor::Black)),
+            board: BoardState::new_starting_state(PlayerColor::Black),
         }
     }
 }
