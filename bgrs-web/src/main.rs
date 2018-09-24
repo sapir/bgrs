@@ -14,15 +14,20 @@ mod point;
 mod svg;
 
 use self::board::Board;
+use bgrs_logic::{BoardState, PlayerColor};
 
-struct Model;
+struct Game {
+    state: BoardState,
+}
 
-impl Component for Model {
+impl Component for Game {
     type Message = ();
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Model
+        Game {
+            state: BoardState::new_starting_state(PlayerColor::Black),
+        }
     }
 
     fn update(&mut self, _msg: ()) -> ShouldRender {
@@ -30,17 +35,18 @@ impl Component for Model {
     }
 }
 
-impl Renderable<Model> for Model {
+impl Renderable<Game> for Game {
     fn view(&self) -> Html<Self> {
         html! {
             <>
-                <Board: />
+                <Board: board=self.state.clone(), />
             </>
         }
     }
 }
+
 fn main() {
     yew::initialize();
-    App::<Model>::new().mount_to_body();
+    App::<Game>::new().mount_to_body();
     yew::run_loop();
 }

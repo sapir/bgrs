@@ -8,9 +8,9 @@ use super::point::{Point, PointDirection};
 
 #[derive(Clone, PartialEq)]
 pub struct BoardProps {
-    width: i32,
-    height: i32,
-    board: BoardState,
+    pub width: i32,
+    pub height: i32,
+    pub board: BoardState,
 }
 
 impl Default for BoardProps {
@@ -33,6 +33,11 @@ impl Component for Board {
 
     fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
         Board { props }
+    }
+
+    fn change(&mut self, props: Self::Properties) -> bool {
+        self.props = props;
+        true
     }
 
     fn update(&mut self, _msg: ()) -> ShouldRender {
