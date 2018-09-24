@@ -2,3 +2,4 @@
 **/*.rs.bk
 *.sublime-project
 *.sublime-workspace
+*.code-workspace
